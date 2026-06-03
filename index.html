@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Para Jhanely Solecito Lindo</title>
-    <!-- Importamos Montserrat, perfecta para composición de texto flotante y limpio -->
+    <!-- Importamos Montserrat -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -189,11 +189,15 @@
             margin-top: 10px;
         }
 
+        /* Modificación protectora para que no se rompa el diseño si falta la imagen */
         .foto {
-            max-width: 240px;
-            height: auto;
+            width: 240px;
+            height: 320px; /* Relación de aspecto vertical estilo retrato */
+            object-fit: cover;
             border-radius: 4px; 
             box-shadow: 0 20px 45px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background-color: rgba(255, 255, 255, 0.05); 
             opacity: 0;
             transform: scale(0.9) translateY(40px);
             transition: opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1), transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -338,7 +342,7 @@
             .texto-carta { font-size: 1.5rem; line-height: 1.5; padding: 0 10px; }
             .rosa-central { max-width: 180px; height: 28vh; margin-bottom: 15px; } 
             .galeria-fotos { flex-direction: column; gap: 20px; }
-            .foto { max-width: 160px; }
+            .foto { width: 160px; height: 210px; }
             .texto-final { font-size: 2rem; margin-top: 25px; }
             .contenedor-corazon-interactivo { width: 70px; height: 70px; }
             .texto-indicacion { font-size: 0.85rem; letter-spacing: 1px; }
@@ -386,7 +390,7 @@
         </video>
     </div>
 
-    <!-- Audio de Fondo (Corregido y Forzado) -->
+    <!-- Audio de Fondo -->
     <audio id="miCancion" preload="auto" loop style="display: none;">
         <source src="amor.mp3" type="audio/mpeg">
     </audio>
@@ -406,7 +410,6 @@
         const corazonInteractivo = document.getElementById('corazonInteractivo');
         const textoIndicacion = document.getElementById('textoIndicacion');
 
-        // Secuencias de texto
         const configuracionSecuencia = [
             {
                 html: "A pesar de la distancia te quiero mucho <span class='keyword-oro'>solecito</span>",
@@ -593,22 +596,18 @@
             }
         }
 
-        // CONTROL ACCIONADO POR EL BOTÓN DE INICIO
         btnEmpezar.addEventListener('click', () => {
-            // 1. Forzar el audio instantáneamente usando la interacción directa del usuario
             miCancion.volume = 1.0;
             const playPromise = miCancion.play();
             
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
-                    console.log("Reintento automático de audio debido a restricción del navegador...");
-                    // Sistema de respaldo: reintentar al mínimo cambio de estado
+                    console.log("Reintento de audio programado...");
                     document.body.addEventListener('touchstart', () => { miCancion.play(); }, {once: true});
                     document.body.addEventListener('click', () => { miCancion.play(); }, {once: true});
                 });
             }
 
-            // 2. Ejecutar animaciones y video
             btnEmpezar.classList.add('fade-out');
             videoContainer.classList.add('video-visible');
             miVideo.play().catch(e => console.log("Video listo"));
@@ -621,7 +620,6 @@
             }, 1500);
         });
 
-        // Interacción del corazón al final
         corazonInteractivo.addEventListener('click', () => {
             if (!bloqueFinal.classList.contains('llenado')) {
                 bloqueFinal.classList.add('llenado');
