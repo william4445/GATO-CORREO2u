@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Jhanely Solecito Lindo</title>
+    <!-- Importamos Montserrat, perfecta para composición de texto flotante y limpio -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- ESTILOS BASE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- CONTENEDOR DEL VIDEO CON FILTRO OSCURO --- */
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1.5s ease, visibility 1.5s ease;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.7) 100%); 
+            z-index: 2;
+        }
+
+        /* --- BOTÓN DE INICIO --- */
+        .btn-empezar {
+            position: relative;
+            z-index: 10;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #ffffff;
+            background: transparent;
+            border: 2px solid #ffffff;
+            border-radius: 4px; 
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .corazon-icono {
+            color: #ff3344;
+            display: inline-block;
+            animation: latido 1.2s infinite ease-in-out;
+        }
+
+        @keyframes latido {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        @media (hover: hover) {
+            .btn-empezar:hover {
+                background-color: #ffffff;
+                color: #000000;
+                box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+                letter-spacing: 5px;
+            }
+        }
+
+        /* --- CONTENEDOR DE CONTENIDO --- */
+        .contenido-interactivo {
+            position: absolute;
+            z-index: 5;
+            width: 90%;
+            max-width: 850px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: auto;
+            max-height: 95vh;
+        }
+
+        /* --- TEXTO FLOTANTE --- */
+        .texto-carta {
+            color: #ffffff;
+            font-size: 2.2rem; 
+            font-weight: 700;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            width: 100%;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.9), 0 2px 4px rgba(0,0,0,0.8), 0 0 20px rgba(0,0,0,0.5);
+            margin-top: 10px;
+            padding: 0; 
+            background: transparent; 
+            border-radius: 0;
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* --- CATÁLOGO DE ANIMACIONES --- */
+        .anim-cinematic-blur { opacity: 1; filter: blur(0px); letter-spacing: 1px; transform: scale(1); }
+        .out-cinematic-blur { opacity: 0; filter: blur(20px); letter-spacing: 4px; transform: scale(1.05); }
+        .init-cinematic-blur { opacity: 0; filter: blur(25px); letter-spacing: -3px; transform: scale(0.95); }
+
+        .anim-fluid-rise { opacity: 1; transform: translateY(0) skewY(0deg); filter: blur(0); }
+        .out-fluid-rise { opacity: 0; transform: translateY(-50px) skewY(-2deg); filter: blur(5px); }
+        .init-fluid-rise { opacity: 0; transform: translateY(60px) skewY(3deg); filter: blur(8px); }
+
+        .anim-epic-expand { opacity: 1; letter-spacing: 2px; transform: scale(1); }
+        .out-epic-expand { opacity: 0; letter-spacing: 8px; transform: scale(1.1); filter: blur(10px); }
+        .init-epic-expand { opacity: 0; letter-spacing: -5px; transform: scale(0.9); filter: blur(5px); }
+
+        .anim-slide-tilt { opacity: 1; transform: translateX(0) rotate(0deg); }
+        .out-slide-tilt { opacity: 0; transform: translateX(60px) rotate(2deg); filter: blur(4px); }
+        .init-slide-tilt { opacity: 0; transform: translateX(-60px) rotate(-2deg); filter: blur(4px); }
+
+        .anim-deep-zoom { opacity: 1; transform: scale(1); filter: drop-shadow(0 4px 12px rgba(0,0,0,0.9)); }
+        .out-deep-zoom { opacity: 0; transform: scale(0.7); filter: blur(15px); }
+        .init-deep-zoom { opacity: 0; transform: scale(1.4); filter: blur(20px); }
+
+        /* --- ESTRUCTURA DE LA ROSA CENTRAL --- */
+        .rosa-central {
+            display: none;
+            width: 100%;
+            max-width: 280px;
+            height: 35vh;     
+            object-fit: contain; 
+            opacity: 0;
+            transform: scale(0.85);
+            filter: blur(10px);
+            transition: opacity 1s ease, transform 1s cubic-bezier(0.34, 1.56, 0.64, 1), filter 1s ease;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.8));
+        }
+
+        .rosa-central.visible {
+            display: block;
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0px);
+        }
+
+        /* --- ENFOQUE EN PALABRAS IMPORTANTES --- */
+        .keyword-rosa { color: #ff527b; font-weight: 900; text-shadow: 0 0 15px rgba(255, 82, 123, 0.3); }
+        .keyword-oro { color: #ffca28; font-weight: 900; text-shadow: 0 0 15px rgba(255, 202, 40, 0.3); }
+        .keyword-coral { color: #ff7043; font-weight: 900; text-shadow: 0 0 15px rgba(255, 112, 67, 0.3); }
+
+        /* --- CONTENEDOR DE IMÁGENES FINAL --- */
+        .galeria-fotos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .foto {
+            max-width: 240px;
+            height: auto;
+            border-radius: 4px; 
+            box-shadow: 0 20px 45px rgba(0,0,0,0.8);
+            opacity: 0;
+            transform: scale(0.9) translateY(40px);
+            transition: opacity 1.8s cubic-bezier(0.16, 1, 0.3, 1), transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .foto.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* --- TEXTO FINAL --- */
+        .texto-final {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: #ff527b;
+            letter-spacing: 4px;
+            margin-top: 35px;
+            opacity: 0;
+            transform: scale(0.85);
+            filter: blur(8px);
+            transition: opacity 2s cubic-bezier(0.16, 1, 0.3, 1), transform 2s cubic-bezier(0.16, 1, 0.3, 1), filter 1.5s ease;
+            text-shadow: 0 0 25px rgba(255, 82, 123, 0.6), 0 4px 15px rgba(0,0,0,0.9);
+            width: 100%;
+        }
+
+        .texto-final.visible {
+            opacity: 1;
+            transform: scale(1);
+            filter: blur(0px);
+        }
+
+        /* --- BLOQUE DEL CORAZÓN Y SU TEXTO --- */
+        .bloque-interactivo-final {
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            transform: translateY(20px);
+            filter: blur(5px);
+            transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), filter 1s ease;
+            pointer-events: none;
+        }
+
+        .bloque-interactivo-final.visible {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0px);
+            pointer-events: auto;
+        }
+
+        .texto-indicacion {
+            color: #ffffff;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+            transition: opacity 0.5s ease;
+        }
+
+        .contenedor-corazon-interactivo {
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .svg-corazon {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .svg-corazon path {
+            fill: transparent;
+            stroke: #ffffff;
+            stroke-width: 2;
+            transition: fill 0.8s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.5s ease, filter 0.5s ease;
+            filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.3));
+        }
+
+        .bloque-interactivo-final.llenado .svg-corazon path {
+            fill: #ff3355;
+            stroke: #ff3355;
+            filter: drop-shadow(0 0 25px rgba(255, 51, 85, 0.8));
+        }
+
+        .bloque-interactivo-final.visible:not(.llenado) .contenedor-corazon-interactivo {
+            animation: latidoSutil 1.5s infinite ease-in-out;
+        }
+
+        @keyframes latidoSutil {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
+
+        /* --- EFECTO LLUVIA DE ROSAS --- */
+        .rosa-cayendo {
+            position: fixed;
+            top: -60px;
+            z-index: 3; 
+            user-select: none;
+            pointer-events: none;
+            animation: caer linear forwards;
+        }
+
+        @keyframes caer {
+            0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0; }
+            15% { opacity: 0.7; }
+            85% { opacity: 0.7; }
+            100% { transform: translateY(105vh) rotate(240deg) scale(1); opacity: 0; }
+        }
+
+        /* --- EFECTO ANIMACIÓN EXPLOSIÓN DE FLORES --- */
+        .flor-explosion {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            z-index: 20; 
+            user-select: none;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            animation: estallar 1.6s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes estallar {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 1; filter: blur(0); }
+            60% { opacity: 1; }
+            100% { transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1.1) rotate(var(--r)); opacity: 0; filter: blur(2px); }
+        }
+
+        /* --- CLASES DE ACTIVACIÓN --- */
+        .video-visible { opacity: 1 !important; visibility: visible !important; }
+        .fade-out { opacity: 0; pointer-events: none; transform: scale(0.95); transition: all 0.6s ease; }
+        .ocultar-completamente { display: none !important; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .btn-empezar { padding: 14px 24px; width: 85%; font-size: 1rem; }
+            .texto-carta { font-size: 1.5rem; line-height: 1.5; padding: 0 10px; }
+            .rosa-central { max-width: 180px; height: 28vh; margin-bottom: 15px; } 
+            .galeria-fotos { flex-direction: column; gap: 20px; }
+            .foto { max-width: 160px; }
+            .texto-final { font-size: 2rem; margin-top: 25px; }
+            .contenedor-corazon-interactivo { width: 70px; height: 70px; }
+            .texto-indicacion { font-size: 0.85rem; letter-spacing: 1px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Botón Inicial -->
+    <button class="btn-empezar" id="btnEmpezar">
+        <span class="corazon-icono">❤️</span>
+        Jhanely Solecito Lindo
+        <span class="corazon-icono">❤️</span>
+    </button>
+
+    <!-- Mensajes e Imágenes -->
+    <div class="contenido-interactivo">
+        <img src="ro1.png" alt="Rosa" class="rosa-central" id="rosaCentral">
+
+        <h1 class="texto-carta" id="textoMensaje"></h1>
+        
+        <div class="galeria-fotos">
+            <img src="tu.png" alt="Tú" class="foto" id="fotoTu">
+            <img src="yo.png" alt="Yo" class="foto" id="fotoYo">
+        </div>
+
+        <h2 class="texto-final" id="textoFinal">TE QUIERO MUCHO</h2>
+
+        <!-- Bloque Interactivo Final -->
+        <div class="bloque-interactivo-final" id="bloqueFinal">
+            <p class="texto-indicacion" id="textoIndicacion">haz click en el corazón</p>
+            <div class="contenedor-corazon-interactivo" id="corazonInteractivo">
+                <svg class="svg-corazon" viewBox="0 0 32 32">
+                    <path d="M16,28.261c-0.484,0-0.961-0.174-1.341-0.513C13.239,26.513,4,18.067,4,11.536C4,6.774,7.664,3.111,12.062,3.111 c2.686,0,5.112,1.393,6.56,3.585c1.448-2.191,3.874-3.585,6.56-3.585C29.585,3.111,33,6.774,33,11.536 c0,6.531-9.239,14.978-10.659,16.212C21.961,28.087,21.484,28.261,21,28.261H16z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video de Fondo -->
+    <div class="video-container" id="videoContainer">
+        <div class="overlay"></div>
+        <video id="miVideo" preload="auto" playsinline muted loop>
+            <source src="M1.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- Audio de Fondo (Corregido y Forzado) -->
+    <audio id="miCancion" preload="auto" loop style="display: none;">
+        <source src="amor.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const btnEmpezar = document.getElementById('btnEmpezar');
+        const videoContainer = document.getElementById('videoContainer');
+        const miVideo = document.getElementById('miVideo');
+        const miCancion = document.getElementById('miCancion');
+        
+        const textoMensaje = document.getElementById('textoMensaje');
+        const rosaCentral = document.getElementById('rosaCentral');
+        const fotoTu = document.getElementById('fotoTu');
+        const fotoYo = document.getElementById('fotoYo');
+        const textoFinal = document.getElementById('textoFinal');
+        const bloqueFinal = document.getElementById('bloqueFinal');
+        const corazonInteractivo = document.getElementById('corazonInteractivo');
+        const textoIndicacion = document.getElementById('textoIndicacion');
+
+        // Secuencias de texto
+        const configuracionSecuencia = [
+            {
+                html: "A pesar de la distancia te quiero mucho <span class='keyword-oro'>solecito</span>",
+                claseIn: "anim-cinematic-blur",
+                claseOut: "out-cinematic-blur",
+                claseInit: "init-cinematic-blur",
+                duracion: 5000
+            },
+            {
+                html: "¿Tienes un mapa? Porque me he perdido en tu <span class='keyword-rosa'>belleza</span> y no quiero salirme",
+                claseIn: "anim-fluid-rise",
+                claseOut: "out-fluid-rise",
+                claseInit: "init-fluid-rise",
+                duracion: 5500
+            },
+            {
+                html: "Por eso te traigo estas <span class='keyword-coral'>rosas</span> tan rojas que hablan por mí\nQue hablan de ti, lo mucho que te quiero",
+                claseIn: "anim-epic-expand",
+                claseOut: "out-epic-expand",
+                claseInit: "init-epic-expand",
+                duracion: 6500
+            },
+            {
+                html: "Podré estar haciendo mil cosas, pero nunca dejo de pensar en ti. También paso a recordarte lo <span class='keyword-rosa'>hermosa</span> que eres siempre. Por si no te lo dije hoy: te quiero <span class='keyword-coral'>muchísimo</span>.",
+                claseIn: "anim-deep-zoom",
+                claseOut: "out-deep-zoom",
+                claseInit: "init-deep-zoom",
+                duracion: 9000
+            },
+            {
+                html: "Le doy gracias a <span class='keyword-oro'>Dios</span> por tu vida, por tu sonrisa, por tu forma de ser y por cada momento que me permite compartir contigo. Oro para que te cuide, te bendiga y te recuerde cada día lo <span class='keyword-rosa'>valiosa</span>, fuerte, inteligente y hermosa que eres.",
+                claseIn: "anim-slide-tilt",
+                claseOut: "out-slide-tilt",
+                claseInit: "init-slide-tilt",
+                duracion: 9500
+            },
+            {
+                html: "Me gusta saber que existes, porque personas como tú hacen que los días sean más <span class='keyword-oro'>bonitos</span>. Y aunque no siempre encuentre las palabras perfectas, quiero que sepas que te aprecio mucho y deseo que siempre tengas motivos para <span class='keyword-rosa'>sonreír</span>.",
+                claseIn: "anim-cinematic-blur",
+                claseOut: "out-cinematic-blur",
+                claseInit: "init-cinematic-blur",
+                duracion: 9500
+            },
+            {
+                html: "Y ahora un pequeño poema gracioso:\n\nSi fueras <span class='keyword-oro'>Wi-Fi</span>, tendrías señal completa,\nporque contigo la conexión siempre se siente perfecta.",
+                claseIn: "anim-fluid-rise",
+                claseOut: "out-fluid-rise",
+                claseInit: "init-fluid-rise",
+                duracion: 7500
+            },
+            {
+                html: "Si fueras una <span class='keyword-rosa'>estrella</span>, iluminarías el cielo entero,\naunque siendo sincero, brillas más que el foco de mi cuarto cuando no quiero. 😂",
+                claseIn: "anim-epic-expand",
+                claseOut: "out-epic-expand",
+                claseInit: "init-epic-expand",
+                duracion: 8500
+            },
+            {
+                html: "Eres como una <span class='keyword-oro'>luz</span> que alegra mis días y una de esas <span class='keyword-coral'>bendiciones</span> que llegan cuando menos se esperan. Que Dios guíe cada uno de tus pasos, cumpla los deseos de tu corazón y te regale mucha felicidad.",
+                claseIn: "anim-deep-zoom",
+                claseOut: "out-deep-zoom",
+                claseInit: "init-deep-zoom",
+                duracion: 9500
+            },
+            {
+                html: "Y por si hoy nadie te lo ha dicho: eres <span class='keyword-rosa'>importante</span>, eres suficiente, eres <span class='keyword-oro'>increíble</span> y mereces todo lo bueno que Dios tiene preparado para ti.",
+                claseIn: "anim-slide-tilt",
+                claseOut: "out-slide-tilt",
+                claseInit: "init-slide-tilt",
+                duracion: 9000
+            }
+        ];
+        
+        let bloqueActual = 0;
+        let intervaloLluvia;
+
+        function mostrarBloqueTexto() {
+            const config = configuracionSecuencia[bloqueActual];
+            
+            textoMensaje.className = "texto-carta " + config.claseInit;
+            textoMensaje.innerHTML = config.html;
+            
+            void textoMensaje.offsetWidth;
+            
+            textoMensaje.classList.remove(config.claseInit);
+            textoMensaje.classList.add(config.claseIn);
+            
+            if (bloqueActual === 2) {
+                rosaCentral.classList.add('visible');
+                comenzarLluviaDeRosas();
+            }
+
+            setTimeout(removerBloqueTexto, config.duracion);
+        }
+
+        function removerBloqueTexto() {
+            const config = configuracionSecuencia[bloqueActual];
+            
+            textoMensaje.classList.remove(config.claseIn);
+            textoMensaje.classList.add(config.claseOut);
+            
+            if (bloqueActual === 2 && rosaCentral.classList.contains('visible')) {
+                rosaCentral.style.opacity = "0";
+                rosaCentral.style.transform = "scale(0.85)";
+                rosaCentral.style.filter = "blur(10px)";
+            }
+            
+            setTimeout(() => {
+                rosaCentral.classList.remove('visible');
+                rosaCentral.style.cssText = ""; 
+                
+                bloqueActual++;
+                if (bloqueActual < configuracionSecuencia.length) {
+                    mostrarBloqueTexto();
+                } else {
+                    secuenciaImagenes();
+                }
+            }, 800);
+        }
+
+        function secuenciaImagenes() {
+            textoMensaje.className = "texto-carta ocultar-completamente";
+            fotoTu.classList.add('visible');
+            
+            setTimeout(() => {
+                fotoYo.classList.add('visible');
+                
+                setTimeout(() => {
+                    textoFinal.classList.add('visible');
+                    
+                    setTimeout(() => {
+                        bloqueFinal.classList.add('visible');
+                    }, 1500);
+
+                }, 1500);
+            }, 1800);
+        }
+
+        function comenzarLluviaDeRosas() {
+            intervaloLluvia = setInterval(() => {
+                const rosaImg = document.createElement('img');
+                rosaImg.src = 'rosas.png'; 
+                rosaImg.classList.add('rosa-cayendo');
+                rosaImg.style.left = Math.random() * 100 + 'vw';
+                
+                let anchoAleatorio = Math.random() * 25 + 25; 
+                rosaImg.style.width = anchoAleatorio + 'px';
+                rosaImg.style.height = 'auto';
+                rosaImg.style.animationDuration = (Math.random() * 3 + 4.5) + 's';
+                
+                document.body.appendChild(rosaImg);
+                setTimeout(() => { rosaImg.remove(); }, 7500);
+            }, 250); 
+        }
+
+        function ejecutarExplosionFlores() {
+            const numeroDeFlores = 120; 
+            const totalImagenes = 7; 
+
+            for (let i = 0; i < numeroDeFlores; i++) {
+                const flor = document.createElement('img');
+                const numeroFlorAleatoria = Math.floor(Math.random() * totalImagenes) + 1;
+                flor.src = `flor${numeroFlorAleatoria}.png`;
+                flor.classList.add('flor-explosion');
+
+                const angulo = Math.random() * Math.PI * 2;
+                const distancia = Math.random() * 60 + 20; 
+                
+                const xDestino = Math.cos(angulo) * distancia + 'vmin';
+                const yDestino = Math.sin(angulo) * distancia + 'vmin';
+                const rotacionAleatoria = (Math.random() * 720 - 360) + 'deg';
+
+                flor.style.setProperty('--x', xDestino);
+                flor.style.setProperty('--y', yDestino);
+                flor.style.setProperty('--r', rotacionAleatoria);
+
+                const tamaño = Math.random() * 40 + 25;
+                flor.style.width = tamaño + 'px';
+                flor.style.height = 'auto';
+                flor.style.animationDelay = (Math.random() * 0.15) + 's';
+
+                document.body.appendChild(flor);
+                setTimeout(() => { flor.remove(); }, 1600);
+            }
+        }
+
+        // CONTROL ACCIONADO POR EL BOTÓN DE INICIO
+        btnEmpezar.addEventListener('click', () => {
+            // 1. Forzar el audio instantáneamente usando la interacción directa del usuario
+            miCancion.volume = 1.0;
+            const playPromise = miCancion.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Reintento automático de audio debido a restricción del navegador...");
+                    // Sistema de respaldo: reintentar al mínimo cambio de estado
+                    document.body.addEventListener('touchstart', () => { miCancion.play(); }, {once: true});
+                    document.body.addEventListener('click', () => { miCancion.play(); }, {once: true});
+                });
+            }
+
+            // 2. Ejecutar animaciones y video
+            btnEmpezar.classList.add('fade-out');
+            videoContainer.classList.add('video-visible');
+            miVideo.play().catch(e => console.log("Video listo"));
+
+            ejecutarExplosionFlores();
+
+            setTimeout(() => {
+                btnEmpezar.remove();
+                mostrarBloqueTexto();
+            }, 1500);
+        });
+
+        // Interacción del corazón al final
+        corazonInteractivo.addEventListener('click', () => {
+            if (!bloqueFinal.classList.contains('llenado')) {
+                bloqueFinal.classList.add('llenado');
+                textoIndicacion.style.opacity = '0';
+                
+                corazonInteractivo.style.transform = 'scale(1.4)';
+                setTimeout(() => {
+                    corazonInteractivo.style.transform = 'scale(1)';
+                }, 200);
+
+                setTimeout(() => {
+                    ejecutarExplosionFlores();
+                }, 300);
+            }
+        });
+    </script>
+</body>
+</html>
